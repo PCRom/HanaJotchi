@@ -1,15 +1,20 @@
 # 👾 Tamagotchi
-A simple virtual pet game where you can feed, play, and care for your digital companion.
 
-## 🚀 How to Run
-1. Download the files.
-2. Open `tamagotchi.exe`.
+A simple virtual pet game where you can feed, play, and care for your digital companion!
 
-## 🎮 Features
-- **Feed**: Lower your pet's hunger level.
-- **Play**: Increase happiness but decrease energy.
-- **Sleep**: Recharge energy overnight.
+## 🎮 How to Play
+1. **Download the Game**: Click the green **Code** button and select **Download ZIP** (or download the latest `.exe` from the Releases section).
+2. **Open the App**: Find and run the **Tamagotchi.exe** file.
+3. **Interact**: Use the on-screen buttons to care for your pet!
+   - 🍖 **Feed**: Keep your pet full.
+   - 🎾 **Play**: Make your pet happy.
+   - 💤 **Sleep**: Recharge your pet's energy.
+
+## ✨ Features
+- **Live Stats**: Your pet's progress is saved automatically to our online server.
+- **Real-time Graphics**: Watch your pet move and react in the C# game window.
+- **Always Online**: No setup required—just open the app and play!
 
 ## 🛠️ Built With
-*   **Language**: [C# (.NET Winforms)]
-*   **Backend**: [PHP 8.x]
+- **C#** (The Game Interface)
+- **PHP & MySQL** (The Online Brain & Memory)
