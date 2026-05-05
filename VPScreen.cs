@@ -37,10 +37,12 @@ namespace HanaJotchi
         private Rectangle feedBtn = new Rectangle(20, y, 80, 40);
         private Rectangle playBtn = new Rectangle(120, y, 80, 40);
         private Rectangle sleepBtn = new Rectangle(220, y, 80, 40);
+        private Rectangle exitBtn;
 
         public VPScreen()
         {
             InitializeComponent();
+            this.TopMost = true; // Keep the window on top
         }
 
         private void HanaJotchiHeartbeat_Tick(object sender, EventArgs e)
@@ -125,12 +127,17 @@ namespace HanaJotchi
             Bitmap canvas = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.Clear(Color.FromArgb(200, 215, 180)); // Background
+                g.Clear(Color.FromArgb(255,0,1,0)); // Transparent Background
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-                // Simple rectangles representing the 4 hearts/bars often used in Tamagotchi
+                // Draw background "pill" shape
+                Rectangle pillRect = new Rectangle(10, 10, pictureBox1.Width-30, pictureBox1.Height-30);
+                SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 200, 215, 180));
+                g.FillEllipse(myBrush, pillRect);
+
+
                 DrawStatBar(g, "Hunger",pet.Hunger, 10, 10, 0, 3, Color.Red);
                 DrawStatBar(g, "Happiness", pet.Happiness, 10, 35, 10, 3, Color.Gold);
-
 
                 int stateUpdate = targetX % 100;
                 g.DrawString($"{stateUpdate}", new Font("Courier New", 12), Brushes.Black, 194, 269);
@@ -156,6 +163,7 @@ namespace HanaJotchi
                     g.FillEllipse(Brushes.Black, petX + 9, petY - 10, 6, 6);
                 }
 
+
                 g.FillRectangle(Brushes.LightGray, feedBtn);
                 g.DrawString("FEED", new Font("Courier New", 12), Brushes.Black, feedBtn.X + 10, feedBtn.Y + 10);
 
@@ -165,8 +173,15 @@ namespace HanaJotchi
                 g.FillRectangle(Brushes.LightGray, sleepBtn);
                 g.DrawString("SLEEP", new Font("Courier New", 12), Brushes.Black, sleepBtn.X + 10, sleepBtn.Y + 10);
 
+                //Draw Exit Button
+                g.FillRectangle(Brushes.DarkRed, exitBtn);
+                g.DrawString("X", new Font("Courier New", 20, FontStyle.Bold), Brushes.White, exitBtn.X + 6, exitBtn.Y + 5);
+
 
                 g.DrawString($"STATUS: {petState}", new Font("Courier New", 12), Brushes.Black, 10, 150);
+
+                g.FillPie(Brushes.Fuchsia, 10, 210, 50, 50, 0, (pet.Experience % 100) * 3.6f);
+
             }
             pictureBox1.Image?.Dispose();
             pictureBox1.Image = canvas;
@@ -175,6 +190,8 @@ namespace HanaJotchi
 
         private void VPScreen_Shown(object sender, EventArgs e)
         {
+            exitBtn = new Rectangle(pictureBox1.Width - 40, 0, 40, 40);
+
             // Initialize pet data (in a real game, this would come from the API)
             pet = new HanaJotchiGotchaGotcha
             {
@@ -182,7 +199,7 @@ namespace HanaJotchi
                 Token = "abc123", //This Token would be a unique identifier from the API, it is the lifeline to your pet's data and must be included in all API calls to update or retrieve stats.
                 Age = 2,
                 Description = "A happy little pet.",
-                Experience = 150,
+                Experience = 99,
                 Happiness = 97,
                 Hunger = 10,
                 IsAwake = true,
@@ -241,6 +258,10 @@ namespace HanaJotchi
             {
                 PerformAction("sleep");
             }
+            else if (exitBtn.Contains(e.Location))
+            {
+                PerformAction("exit");
+            }
         }
 
         private async void PerformAction(string action)
@@ -260,6 +281,9 @@ namespace HanaJotchi
                     break;
                 case "sleep":
                     pet.Sleep();
+                    break;
+                case "exit":
+                    Application.Exit();
                     break;
             }
 
