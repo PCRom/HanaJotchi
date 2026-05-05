@@ -129,7 +129,7 @@ namespace HanaJotchi
         /// <param name="x">The x-coordinate, in pixels, of the starting position for the label and bar.</param>
         /// <param name="y">The y-coordinate, in pixels, of the starting position for the label and bar.</param>
         /// <param name="color">The color used to fill the bar.</param>
-        private void DrawStatBar(Graphics g, string label, int value, int x, int y, int ax, int ay, Color color)
+        private void DrawStatBar(Graphics g, string label, float value, int x, int y, int ax, int ay, Color color)
         {
             g.DrawString(label, new Font("Arial", 10), GetUIBrush(Color.Black), x - ax, y - ay);
             g.FillRectangle(GetUIBrush(color), x + 60, y + 2, value, 10);
@@ -144,11 +144,10 @@ namespace HanaJotchi
         /// <param name="value">0-100</param>
         /// <param name="isInverse">If it's an inverse stat (Hunger), 0 is "Full" and 100 is "Starving"</param>
         /// <returns></returns>
-        private Color GetStatColor(int value, bool isInverse)
+        private Color GetStatColor(float value, bool isInverse)
         {
             // We flip the logic so the visual remains consistent for the user
-            int checkValue = isInverse ? (100 - value) : value;
-
+            int checkValue = isInverse ? (int)Math.Round(100 - value) : (int)Math.Round(value);
             if (checkValue <= 20) return Color.FromArgb(uiAlpha, Color.Red); // Danger zone
             if (checkValue >= 50) return Color.FromArgb(uiAlpha, Color.LimeGreen); // Healthy zone
 

@@ -14,8 +14,8 @@ namespace HanaJotchi
         // Are eyes closed?
         public bool IsBlinking { get; set; }
         public long Experience { get; set; }
-        public int Hunger { get; set; }
-        public int Happiness { get; set; }
+        public float Hunger { get; set; }
+        public float Happiness { get; set; }
         public int Hair { get; set; }
         public int Hat { get; set; }
         public int Hold { get; set; }
@@ -28,24 +28,37 @@ namespace HanaJotchi
         public int Mouth { get; set; }
 
 
-        public float DefaultDecayRate { get { return 0.5f; }}
+        public float DefaultDecayRate { get { return 0.001f; }}
 
         public void Update()
-        {
-            if (Hunger > 70)
-            {
-                //TODO Fix this, it's currently does not work
-                Happiness -= (int)DefaultDecayRate * 2;
-            }
-
+        {             
             if (!IsAwake)
             {
                 return;
             }
 
+            if (Hunger > 70)
+            {
+                Happiness -= DefaultDecayRate * 16;
+            }
+            else if (Hunger > 50)
+            {
+                Happiness -= DefaultDecayRate * 8;
+            }
+            else if (Hunger > 30)
+            {
+                Happiness -= DefaultDecayRate * 4;
+            }
+            else if (Hunger > 10)
+            {
+                Happiness -= DefaultDecayRate * 1;
+            }
+
             /* Run Each Update Cycle */
 
-            Hunger = Math.Min(100, Hunger - (int)DefaultDecayRate);
+            Hunger = Math.Min(100, Hunger + DefaultDecayRate);
+
+            //Console.WriteLine($"Updated pet status: Hunger={Hunger}, Happiness={Happiness}");
         }
 
         public void Feed()
@@ -53,6 +66,7 @@ namespace HanaJotchi
             WakeUp();
             Hunger = Math.Max(0, Hunger - 10);
             Happiness = Math.Min(100, Happiness + 5);
+            Experience += 1;
         }
 
         public void Play()
@@ -60,12 +74,14 @@ namespace HanaJotchi
             WakeUp();
             Happiness = Math.Min(100, Happiness + 10);
             Hunger = Math.Min(100, Hunger + 5);
+            Experience += 10;
         }
 
         public void Sleep()
         {
             IsAwake = false;
             Hunger = Math.Min(100, Hunger + 5);
+            Experience += 1;
         }
 
         public void WakeUp()
