@@ -31,7 +31,7 @@ namespace HanaJotchi
         public float DefaultDecayRate { get { return 0.001f; }}
 
         public void Update()
-        {             
+        {
             if (!IsAwake)
             {
                 return;
@@ -41,15 +41,19 @@ namespace HanaJotchi
             {
                 Happiness -= DefaultDecayRate * 16;
             }
-            else if (Hunger > 50)
+            else if (Hunger > 55)
             {
                 Happiness -= DefaultDecayRate * 8;
             }
-            else if (Hunger > 30)
+            else if (Hunger > 45)
             {
                 Happiness -= DefaultDecayRate * 4;
             }
-            else if (Hunger > 10)
+            else if (Hunger > 35)
+            {
+                Happiness -= DefaultDecayRate * 2;
+            }
+            else if (Hunger > 25)
             {
                 Happiness -= DefaultDecayRate * 1;
             }

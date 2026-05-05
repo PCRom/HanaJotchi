@@ -103,7 +103,6 @@ namespace HanaJotchi
             // Blink every ~3 seconds
             if (blinkTimer > 30)
             { 
-                
                 hanaJotchiPet.IsBlinking = true;
 
                 // Keep eyes shut for 3 frames
