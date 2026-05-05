@@ -4,7 +4,7 @@ A simple virtual pet game where you can feed, play, and care for your digital co
 
 ## 🎮 How to Play
 1. **Download the Game**: Click the green **Code** button and select **Download ZIP** (or download the latest `.exe` from the Releases section).
-2. **Open the App**: Find and run the **Tamagotchi.exe** file.
+2. **Open the App**: Find and run the **HanaJotchi.exe** file.
 3. **Interact**: Use the on-screen buttons to care for your pet!
    - 🍖 **Feed**: Keep your pet full.
    - 🎾 **Play**: Make your pet happy.
