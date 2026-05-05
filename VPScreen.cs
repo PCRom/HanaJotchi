@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Tamagotchi
+namespace Tamagotchi //TODO: Change this namespace and all references so its not using a trademarked name, for now this is just for demonstration purposes
 {
     public partial class VPScreen : Form
     {
