@@ -15,6 +15,10 @@ namespace HanaJotchi
 
         private const string apiEndpoint = "https://ewaygames.com/GameApi/VirtuPet";
 
+        private bool isDragging = false;
+        private Point lastCursorPos;
+        private Point lastFormPos;
+
 
         // Current stats (default values until API loads)
 
@@ -290,6 +294,37 @@ namespace HanaJotchi
             // Reset state after a moment
             await Task.Delay(1000);
             petState = "Idle";
+        }
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Define the same pill area you used in your RenderGame method
+            Rectangle pillRect = new Rectangle(10, 10, pictureBox1.Width - 30, pictureBox1.Height - 30);
+
+            // Only start dragging if the click is inside the pill shape
+            if (pillRect.Contains(e.Location) && e.Button == MouseButtons.Left)
+            {
+                isDragging = true;
+                lastCursorPos = Cursor.Position;
+                lastFormPos = this.Location;
+            }
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                // Calculate how much the mouse has moved since the last frame
+                int diffX = Cursor.Position.X - lastCursorPos.X;
+                int diffY = Cursor.Position.Y - lastCursorPos.Y;
+
+                // Update the form's position
+                this.Location = new Point(lastFormPos.X + diffX, lastFormPos.Y + diffY);
+            }
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
         }
     }
 }
