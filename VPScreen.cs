@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,10 +12,13 @@ namespace HanaJotchi
 {
     public partial class VPScreen : Form
     {
+        private bool UsePrivateServer = false;
+
         private HanaJotchiGotchaGotcha pet;
         private Timer HanaJotchiHeartbeat;
 
-        private const string apiEndpoint = "https://ewaygames.com/GameApi/VirtuPet";
+        private string apiEndpoint = "https://ewaygames.com/GameApi/VirtuPet";
+
 
         private bool isDragging = false;
         private Point lastCursorPos;
@@ -44,10 +48,14 @@ namespace HanaJotchi
         private Rectangle sleepBtn = new Rectangle(220, y, 80, 40);
         private Rectangle exitBtn;
 
-        public VPScreen()
+        public VPScreen(bool enablePrivateServer = false)
         {
             InitializeComponent();
-            this.TopMost = true; // Keep the window on top
+            
+            // Keep the window on top
+            this.TopMost = true;
+
+            UsePrivateServer = enablePrivateServer;
         }
 
         private void HanaJotchiHeartbeat_Tick(object sender, EventArgs e)
@@ -125,11 +133,33 @@ namespace HanaJotchi
         }
 
         /// <summary>
+        /// Determines the color to use for a stat bar based on its value. For inverse stats like Hunger, 
+        /// the logic is flipped so that lower values are green and higher values are red, 
+        /// providing a consistent visual cue for the player regardless of whether a higher or lower value is desirable.
+        /// </summary>
+        /// <param name="value">0-100</param>
+        /// <param name="isInverse">If it's an inverse stat (Hunger), 0 is "Full" and 100 is "Starving"</param>
+        /// <returns></returns>
+        private Color GetStatColor(int value, bool isInverse)
+        {
+            // We flip the logic so the visual remains consistent for the user
+            int checkValue = isInverse ? (100 - value) : value;
+
+            if (checkValue <= 20) return Color.Red;       // Danger zone
+            if (checkValue >= 50) return Color.LimeGreen; // Healthy zone
+
+            return Color.Gold; // Caution/Normal
+        }
+
+        /// <summary>
         /// Simple render engine gives you total control over the "retro" look.
         /// </summary>
         private void RenderGame()
         {
+            // Create a new bitmap to draw on, matching the size of the PictureBox
             Bitmap canvas = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+
+            // Use a Graphics object to draw on the bitmap
             using (Graphics g = Graphics.FromImage(canvas))
             {
                 // Transparent Background
@@ -178,6 +208,7 @@ namespace HanaJotchi
                 int screenX = rect.X + (rect.Width - screenWidth) / 2;
                 int screenY = rect.Y + (rect.Height / 6); // Positioned in the upper-middle
 
+                // Create a rectangle for the screen area
                 Rectangle screenRect = new Rectangle(screenX, screenY, screenWidth, screenHeight);
 
                 // Draw the LCD background (classic greenish-grey)
@@ -190,12 +221,14 @@ namespace HanaJotchi
 
 
                 //Draw Stats Bars
-                DrawStatBar(g, "Hunger",pet.Hunger, 10, 10, 0, 3, Color.Red);
-                DrawStatBar(g, "Happiness", pet.Happiness, 10, 35, 10, 3, Color.Gold);
+                DrawStatBar(g, "Hunger", pet.Hunger, 10, 10, 0, 3, GetStatColor(pet.Hunger, true));
+                DrawStatBar(g, "Happiness", pet.Happiness, 10, 35, 10, 3, GetStatColor(pet.Happiness, false));
 
+                // Debug: Show targetX as a number and bar for testing movement logic
                 int stateUpdate = targetX % 100;
                 g.DrawString($"{stateUpdate}", new Font("Courier New", 12), Brushes.Black, 194, 269);
 
+                // Shows a pre-dertimed move from random logic, this is to help visualize the movement code and ensure the pet moves toward the targetX as expected.
                 DrawStatBar(g, "Debug Move", stateUpdate, 30, 270, 26, 1, Color.Aqua);
 
                 // Draw Body (centered on petX/petY)
@@ -240,14 +273,37 @@ namespace HanaJotchi
                 g.FillPie(Brushes.BlueViolet, 10, 210, 50, 50, 0, (pet.Experience % 100) * 3.6f);
 
             }
+
+            // Dispose of the old image to free memory, then set the new canvas
             pictureBox1.Image?.Dispose();
+
+            // Set the rendered canvas as the PictureBox image
             pictureBox1.Image = canvas;
 
         }
 
         private void VPScreen_Shown(object sender, EventArgs e)
         {
+            // Position the exit button in the top-right corner of the PictureBox
             exitBtn = new Rectangle(pictureBox1.Width - 40, 0, 40, 40);
+
+            // Check for private server configuration
+            if (UsePrivateServer)
+            {
+                // Load lines from the config file, we expect the private server URL to be on line 6 (index 5)
+                string[] array = File.ReadAllLines("HanaJotchiPrivate.cfg");
+
+                // TODO: The line should changed to actually find the line that starts with "ServerURL=" instead of hardcoding line 6, this is just for testing
+                string priavateServer = array[5]; //TODO: Change this to find the line that starts with "ServerURL=" instead of hardcoding line 6
+
+                // If the line starts with "//", we treat it as a comment and ignore it, otherwise we use the provided URL as the API endpoint.
+                if (!priavateServer.StartsWith("//"))
+                {
+                    // We split the line on the '=' character and take the second part as the API endpoint URL, allowing for flexible configuration without hardcoding the server address.
+                    apiEndpoint = priavateServer.Split('=')[1];
+                }
+            }
+
 
             // Initialize pet data (in a real game, this would come from the API)
             pet = new HanaJotchiGotchaGotcha
