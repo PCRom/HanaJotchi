@@ -34,6 +34,7 @@
             // 
             // CanvasBox
             // 
+            this.CanvasBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(1)))), ((int)(((byte)(0)))));
             this.CanvasBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CanvasBox.Location = new System.Drawing.Point(0, 0);
             this.CanvasBox.Name = "CanvasBox";

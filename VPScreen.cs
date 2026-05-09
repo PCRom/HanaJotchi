@@ -12,12 +12,10 @@ namespace HanaJotchi
 {
     public partial class VPScreen : Form
     {
-        private bool UsePrivateServer = false;
-
         private GotchaGotchiPet hanaJotchiPet;
         private Timer HanaJotchiHeartbeat;
 
-        private string apiEndpoint = "https://ewaygames.com/GameApi/VirtuPet";
+        private readonly string apiEndpoint = "https://ewaygames.com/GameApi/VirtuPet";
 
 
         private bool isDragging = false;
@@ -64,7 +62,31 @@ namespace HanaJotchi
             // Keep the window on top
             this.TopMost = true;
 
-            UsePrivateServer = enablePrivateServer;
+            // Check for private server configuration
+            if (enablePrivateServer)
+            {
+                // Load lines from the config file, we expect the private server URL to be on line 6 (index 5)
+                string[] array = File.ReadAllLines("HanaJotchiPrivate.cfg");
+
+                // We loop through each line in the configuration file to find the server URL. This allows for flexible configuration and the ability to add additional settings in the future without changing the code, as we can simply look for specific keys in the config file.
+                foreach (string line in array)
+                {
+                    // If the line starts with "//", we treat it as a comment and ignore it, otherwise we use the provided URL as the API endpoint.
+                    if (!line.StartsWith("//") && line.Contains("="))
+                    {
+                        // We split the line on the '=' character and take the second part as the API endpoint URL, allowing for flexible configuration without hardcoding the server address.
+                        switch (line.Split('=')[0])
+                        {
+                            case "server": // If the line starts with "server=", we take the value after the '=' as the API endpoint URL and set it to the apiEndpoint variable, allowing the application to connect to a private server instead of the default official server.
+                                apiEndpoint = line.Split('=')[1];
+                                break;
+                            default:
+                                MessageBox.Show($"Found missing config line: \n{line}");
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -371,23 +393,6 @@ namespace HanaJotchi
             // Position the exit button in the top-right corner of the PictureBox
             exitBtn = new Rectangle(CanvasBox.Width - 40, 0, 40, 40);
 
-            // Check for private server configuration
-            if (UsePrivateServer)
-            {
-                // Load lines from the config file, we expect the private server URL to be on line 6 (index 5)
-                string[] array = File.ReadAllLines("HanaJotchiPrivate.cfg");
-
-                // TODO: The line should changed to actually find the line that starts with "ServerURL=" instead of hardcoding line 6, this is just for testing
-                string priavateServer = array[5]; //TODO: Change this to find the line that starts with "ServerURL=" instead of hardcoding line 6
-
-                // If the line starts with "//", we treat it as a comment and ignore it, otherwise we use the provided URL as the API endpoint.
-                if (!priavateServer.StartsWith("//"))
-                {
-                    // We split the line on the '=' character and take the second part as the API endpoint URL, allowing for flexible configuration without hardcoding the server address.
-                    apiEndpoint = priavateServer.Split('=')[1];
-                }
-            }
-
 
             // Initialize pet data (in a real game, this would come from the API)
             hanaJotchiPet = new GotchaGotchiPet
@@ -414,7 +419,6 @@ namespace HanaJotchi
             // Start the game loop
             HanaJotchiHeartbeat.Tick += HanaJotchiHeartbeat_Tick;
 
-            
         }
 
         /// <summary>
