@@ -51,6 +51,12 @@ namespace HanaJotchi
         private Rectangle sleepBtn = new Rectangle(260, y - 20, 80, 40);
         private Rectangle exitBtn;
 
+        /// <summary>
+        /// Initializes a new instance of the VPScreen class, optionally enabling private server mode.
+        /// </summary>
+        /// <remarks>This constructor sets the window to remain on top of other windows. If private server
+        /// mode is enabled, the UsePrivateServer property is set accordingly.</remarks>
+        /// <param name="enablePrivateServer">true to enable private server mode; otherwise, false. The default is false.</param>
         public VPScreen(bool enablePrivateServer = false)
         {
             InitializeComponent();
@@ -61,6 +67,14 @@ namespace HanaJotchi
             UsePrivateServer = enablePrivateServer;
         }
 
+        /// <summary>
+        /// Handles the timer tick event to update the virtual pet's state and refresh the game display.
+        /// </summary>
+        /// <remarks>This method is intended to be used as an event handler for a timer that periodically
+        /// updates the virtual pet's logic and redraws the game interface. It should be attached to the timer's Tick
+        /// event to ensure regular updates.</remarks>
+        /// <param name="sender">The source of the event, typically the timer that triggered the tick.</param>
+        /// <param name="e">An EventArgs object that contains the event data.</param>
         private void HanaJotchiHeartbeat_Tick(object sender, EventArgs e)
         {
             // Handle hunger/happiness over time
@@ -89,7 +103,7 @@ namespace HanaJotchi
             //Occasionally pick a new random spot
             if (rnd.Next(0, 50) == 1)
             {
-                targetX = rnd.Next(150, pictureBox1.Width - 150);
+                targetX = rnd.Next(150, CanvasBox.Width - 150);
             }
 
 
@@ -159,7 +173,7 @@ namespace HanaJotchi
         private void RenderGame()
         {
             // Create a new bitmap to draw on, matching the size of the PictureBox
-            Bitmap canvas = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            Bitmap canvas = new Bitmap(CanvasBox.Width, CanvasBox.Height);
 
             // Use a Graphics object to draw on the bitmap
             using (Graphics g = Graphics.FromImage(canvas))
@@ -173,7 +187,7 @@ namespace HanaJotchi
 
 
                 // Define the bounding area for the egg
-                Rectangle rect = new Rectangle(10, 10, pictureBox1.Width - 40, pictureBox1.Height - 40);
+                Rectangle rect = new Rectangle(10, 10, CanvasBox.Width - 40, CanvasBox.Height - 40);
 
 
                 // Create the egg shape using Bezier curves
@@ -282,7 +296,7 @@ namespace HanaJotchi
                 }
 
                 // Convert screen coordinates to be relative to the PictureBox
-                Point clientCursor = pictureBox1.PointToClient(Cursor.Position);
+                Point clientCursor = CanvasBox.PointToClient(Cursor.Position);
 
                 if (screenRect.Contains(clientCursor))
                 {
@@ -297,10 +311,10 @@ namespace HanaJotchi
             }
 
             // Dispose of the old image to free memory, then set the new canvas
-            pictureBox1.Image?.Dispose();
+            CanvasBox.Image?.Dispose();
 
             // Set the rendered canvas as the PictureBox image
-            pictureBox1.Image = canvas;
+            CanvasBox.Image = canvas;
 
         }
 
@@ -324,6 +338,11 @@ namespace HanaJotchi
 
 
 
+        /// <summary>
+        /// Helper function to create a pill-shaped GraphicsPath for buttons or other UI elements.
+        /// </summary>
+        /// <param name="rect">The height of the rectangle determines the diameter of the rounded ends, creating a smooth, capsule-like appearance. </param>
+        /// <returns>This method returns a GraphicsPath that forms a pill shape based on the provided rectangle.</returns>
         private GraphicsPath CreatePillPath(Rectangle rect)
         {
             var path = new GraphicsPath();
@@ -338,10 +357,19 @@ namespace HanaJotchi
             return path;
         }
 
+        /// <summary>
+        /// Handles the Shown event of the VPScreen form, initializing UI elements, loading configuration settings, and
+        /// starting the main game loop timer.
+        /// </summary>
+        /// <remarks>This method sets up the initial state of the VPScreen, including positioning UI
+        /// controls, reading private server configuration if enabled, and initializing the pet and game loop timer. It
+        /// is intended to be called automatically when the form is first displayed.</remarks>
+        /// <param name="sender">The source of the event, typically the VPScreen form instance.</param>
+        /// <param name="e">An EventArgs object that contains the event data.</param>
         private void VPScreen_Shown(object sender, EventArgs e)
         {
             // Position the exit button in the top-right corner of the PictureBox
-            exitBtn = new Rectangle(pictureBox1.Width - 40, 0, 40, 40);
+            exitBtn = new Rectangle(CanvasBox.Width - 40, 0, 40, 40);
 
             // Check for private server configuration
             if (UsePrivateServer)
@@ -389,6 +417,13 @@ namespace HanaJotchi
             
         }
 
+        /// <summary>
+        /// Synchronizes the local pet's statistics with the latest values from the server.
+        /// </summary>
+        /// <remarks>This method updates the local pet's hunger value to match the server's data. Call
+        /// this method to ensure the local state reflects any changes made remotely. If the server is unreachable or
+        /// returns invalid data, the local state may not be updated.</remarks>
+        /// <returns>A task that represents the asynchronous synchronization operation.</returns>
         public async Task SyncPetStats()
         {
             string responseJson = await UpdatePetStats();
@@ -397,6 +432,14 @@ namespace HanaJotchi
             hanaJotchiPet.Hunger = int.Parse(serverData.new_hunger); // Update local hunger with server's response
         }
 
+        /// <summary>
+        /// Sends the current pet statistics to the remote API and retrieves the server response as a string.
+        /// </summary>
+        /// <remarks>This method posts the pet's name, token, and hunger level to the API endpoint using
+        /// an HTTP POST request. The returned string contains the raw response from the server, which may require
+        /// further parsing or validation depending on the API contract.</remarks>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the response from the server as
+        /// a string.</returns>
         public async Task<string> UpdatePetStats()
         {
             using (var client = new HttpClient())
@@ -413,7 +456,16 @@ namespace HanaJotchi
             }
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Handles the MouseClick event for the PictureBox, triggering actions when interactive buttons within the
+        /// PictureBox are clicked, determining if any interactive buttons were clicked and performing the corresponding actions.
+        /// </summary>
+        /// <remarks>This method determines which interactive button, if any, was clicked within the
+        /// PictureBox and performs the corresponding action. Ensure that the button regions are properly defined to
+        /// enable correct interaction.</remarks>
+        /// <param name="sender">The source of the event, typically the PictureBox control.</param>
+        /// <param name="e">A MouseEventArgs that contains the event data, including the location of the mouse click.</param>
+        private void CanvasBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (feedBtn.Contains(e.Location))
             {
@@ -433,6 +485,14 @@ namespace HanaJotchi
             }
         }
 
+        /// <summary>
+        /// Performs the specified action on the virtual pet, such as feeding, playing, or putting it to sleep.
+        /// </summary>
+        /// <remarks>If the action is "exit", the application will close. For other supported actions, the
+        /// pet's state is updated and the corresponding behavior is triggered. After performing the action, the pet's
+        /// state resets to idle after a short delay.</remarks>
+        /// <param name="action">The action to perform. Supported values are "feed", "play", "sleep", and "exit". The value is
+        /// case-sensitive.</param>
         private async void PerformAction(string action)
         {
             petState = "[Debug State] " + action;
@@ -460,7 +520,16 @@ namespace HanaJotchi
             await Task.Delay(1000);
             petState = "Idle";
         }
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+  
+        /// <summary>
+        /// Handles the MouseDown event for the PictureBox to initiate a drag operation when the left mouse button is
+        /// pressed.
+        /// </summary>
+        /// <remarks>Dragging is initiated only when the left mouse button is pressed. This event is
+        /// commonly used to enable moving or interacting with the PictureBox via mouse input.</remarks>
+        /// <param name="sender">The source of the event, typically the PictureBox control.</param>
+        /// <param name="e">A MouseEventArgs that contains the event data, including information about which mouse button was pressed.</param>
+        private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
             // Drag as we are pressing on any image render of the object,
             // the side effect of a picturebox will drag everything except transparent
@@ -472,7 +541,15 @@ namespace HanaJotchi
             }
         }
 
-        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Handles the MouseMove event for the PictureBox control to update the form's position while dragging.
+        /// </summary>
+        /// <remarks>This method enables the user to move the form by clicking and dragging the PictureBox
+        /// control when dragging is active. Dragging behavior depends on the state of the isDragging flag and the
+        /// tracking of previous cursor and form positions.</remarks>
+        /// <param name="sender">The source of the event, typically the PictureBox control.</param>
+        /// <param name="e">A MouseEventArgs that contains the event data, including the current mouse position.</param>
+        private void CanvasBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
             {
@@ -485,7 +562,12 @@ namespace HanaJotchi
             }
         }
 
-        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Handles the MouseUp event for the picture box to end a drag operation.
+        /// </summary>
+        /// <param name="sender">The source of the event, typically the picture box control.</param>
+        /// <param name="e">A MouseEventArgs that contains the event data for the mouse button release.</param>
+        private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
         {
             isDragging = false;
         }

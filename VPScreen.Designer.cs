@@ -28,42 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new DoubleBufferedPictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.CanvasBox = new HanaJotchi.DoubleBufferedPictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // CanvasBox
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(620, 717);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
-            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
-            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
-            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
+            this.CanvasBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CanvasBox.Location = new System.Drawing.Point(0, 0);
+            this.CanvasBox.Name = "CanvasBox";
+            this.CanvasBox.Size = new System.Drawing.Size(620, 717);
+            this.CanvasBox.TabIndex = 0;
+            this.CanvasBox.TabStop = false;
+            this.CanvasBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseClick);
+            this.CanvasBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseDown);
+            this.CanvasBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseMove);
+            this.CanvasBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseUp);
             // 
             // VPScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(620, 717);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.CanvasBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VPScreen";
             this.Text = "HanaJotchi";
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(1)))), ((int)(((byte)(0)))));
             this.Shown += new System.EventHandler(this.VPScreen_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DoubleBufferedPictureBox pictureBox1;
+        private DoubleBufferedPictureBox CanvasBox;
     }
 }
 
