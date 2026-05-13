@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HanaJotchi
 {
-    public partial class Networking : VPScreen
+    public class GG_Networking : GotchaGotchi
     {
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace HanaJotchi
                     { "hunger", hanaJotchiPet.Hunger.ToString() }
                 };
                 var content = new FormUrlEncodedContent(values);
-                var response = await client.PostAsync(Program.VirtualPet.apiEndpoint + "/petstats.php", content);
+                var response = await client.PostAsync(apiEndpoint + "/petstats.php", content);
                 return await response.Content.ReadAsStringAsync();
             }
         }

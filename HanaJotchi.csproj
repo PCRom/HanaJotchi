@@ -52,9 +52,24 @@
     <Compile Include="DoubleBufferedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GG_Backgrounds.cs">
+      <SubType>Disabled</SubType>
+    </Compile>
+    <Compile Include="GG_Sound.cs">
+      <SubType>Disabled</SubType>
+    </Compile>
+    <Compile Include="GG_Sprites.cs">
+      <SubType>Disabled</SubType>
+    </Compile>
+    <Compile Include="GotchaGotchi.cs">
+      <SubType>Disabled</SubType>
+    </Compile>
     <Compile Include="GotchaGotchiPet.cs" />
-    <Compile Include="Networking.cs">
-      <SubType>Form</SubType>
+    <Compile Include="GG_Graphics.cs">
+      <SubType>Disabled</SubType>
+    </Compile>
+    <Compile Include="GG_Networking.cs">
+      <SubType>Disabled</SubType>
     </Compile>
     <Compile Include="VPScreen.cs">
       <SubType>Form</SubType>
