@@ -17,7 +17,7 @@ A simple virtual pet game where you can feed, play, and care for your digital co
 ## ✨ Features
 - **Live Stats**: Your pet's progress is saved automatically to our online server.
 - **Real-time Graphics**: Watch your pet move and react in the C# game window.
-- **Always Online**: No setup required—just open the app and play!
+- **Always Online**: No server setup required—just open the app, create an account and play!
 
 ## 🛠️ Built With
 - **C#** (The Game Interface)
