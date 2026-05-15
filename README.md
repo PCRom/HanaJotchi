@@ -14,10 +14,19 @@ A simple virtual pet game where you can feed, play, and care for your digital co
    - 🎾 **Play**: Make your pet happy.
    - 💤 **Sleep**: Recharge your pet's energy.
 
-## ✨ Features
-- **Live Stats**: Your pet's progress is saved automatically to our online server.
+## ✨ Basic Features
 - **Real-time Graphics**: Watch your pet move and react in the C# game window.
+- **Enviornments**: Depending on your pet type they may be happier in different enviornments (Land, Cave and Ocean)
+- **Playdate Mode**: If you have more than one pet you can load two instances of the game and your pets may play together.
+
+## 📶 Online Features
+- **Live Stats**: Your pet's progress is saved automatically to our online server.
 - **Always Online**: No server setup required—just open the app, create an account and play!
+- **Private Server**: Anyone can join a private server hold Shift when launching the app to configure.
+
+## 💾 Optional Offline Mode
+- **Offline Only**: Your pet's progress is saved locally, no account is required, stats and events are simulated and cannot be adjusted.
+- **Storage**: Due to the nature of this feature this will make it non-portable and additional files will be saved for stats, progress and more.
 
 ## 🛠️ Built With
 - **C#** (The Game Interface)
